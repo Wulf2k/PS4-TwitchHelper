@@ -29,8 +29,8 @@ Public Class frmPS4TwitchHelper
     Private WithEvents refTimerPost As New System.Windows.Forms.Timer()
     
     
-        Const MOUSEEVENTF_LEFTDOWN As Integer = 2
-        Const MOUSEEVENTF_LEFTUP As Integer = 4
+    Const MOUSEEVENTF_LEFTDOWN As Integer = 2
+    Const MOUSEEVENTF_LEFTUP As Integer = 4
 
     Private Declare Function OpenProcess Lib "kernel32.dll" (ByVal dwDesiredAcess As UInt32, ByVal bInheritHandle As Boolean, ByVal dwProcessId As Int32) As IntPtr
     Private Declare Function ReadProcessMemory Lib "kernel32" (ByVal hProcess As IntPtr, ByVal lpBaseAddress As IntPtr, ByVal lpBuffer() As Byte, ByVal iSize As Integer, ByRef lpNumberOfBytesRead As Integer) As Boolean
@@ -40,7 +40,6 @@ Public Class frmPS4TwitchHelper
     Private Declare Function VirtualProtectEx Lib "kernel32.dll" (hProcess As IntPtr, lpAddress As IntPtr, ByVal lpSize As IntPtr, ByVal dwNewProtect As UInt32, ByRef dwOldProtect As UInt32) As Boolean
     Private Declare Function VirtualFreeEx Lib "kernel32.dll" (hProcess As IntPtr, lpAddress As IntPtr, ByVal dwSize As Integer, ByVal dwFreeType As Integer) As Boolean
     Private Declare Function CreateRemoteThread Lib "kernel32" (ByVal hProcess As Integer, ByVal lpThreadAttributes As Integer, ByVal dwStackSize As Integer, ByVal lpStartAddress As Integer, ByVal lpParameter As Integer, ByVal dwCreationFlags As Integer, ByRef lpThreadId As Integer) As Integer
-    Private Declare Sub mouse_event Lib "user32.dll" (ByVal dwFlags As Integer, ByVal dx As Integer, ByVal dy As Integer, ByVal cButtons As Integer, ByVal dwExtraInfo As IntPtr)
 
     Public Const PROCESS_VM_READ = &H10
     Public Const TH32CS_SNAPPROCESS = &H2
@@ -70,6 +69,7 @@ Public Class frmPS4TwitchHelper
     Dim showdate As Boolean = True
     Dim reportloads As Boolean = True
 
+    Dim dbgtime As datetime = now
 
     Dim reportlocks As Boolean = false
     Dim lastlockstate() As Boolean = {False, False, False, false, 
@@ -102,7 +102,8 @@ Public Class frmPS4TwitchHelper
     Private wow64 As Int32 = 0
 
     Private ctrlPtr As Int32
-
+    
+    Private Declare Sub mouse_event Lib "user32.dll" (ByVal dwFlags As Integer, ByVal dx As Integer, ByVal dy As Integer, ByVal cButtons As Integer, ByVal dwExtraInfo As IntPtr)
 
 
     Private Sub refTimerPost_Tick() Handles refTimerPost.Tick
@@ -402,7 +403,7 @@ Public Class frmPS4TwitchHelper
         If tmpcmd = "reconnect3" Then
             
             x = 1255
-            y = 660
+            y = 684
 
             Cursor.Position = New Point(x, y)
             mouse_event(MOUSEEVENTF_LEFTDOWN, x, y, 0, IntPtr.Zero)
@@ -695,11 +696,12 @@ Public Class frmPS4TwitchHelper
 
     Private sub checkHP
         'Dim starttime As DateTime = now
+        dbgtime = Now
 
         Dim width = 700
         Dim height = 1
-        Dim x = 720
-        Dim y = 126
+        Dim x = 776
+        Dim y = 136
 
         Dim a As New Drawing.Bitmap(width, height)
         Dim b As System.Drawing.Graphics = System.Drawing.Graphics.FromImage(a)
@@ -711,7 +713,7 @@ Public Class frmPS4TwitchHelper
         For i = 0 To width-1
             col  = a.GetPixel(i, 0).ToArgb
 
-            If GetColorR(col) > &H50 And getcolorg(col) < &H40 Then
+            If GetColorR(col) > &H40 And getcolorg(col) < &H40 Then
                 maxpixx = x + i
             Else
                 if maxpixx > x Then Exit For
@@ -720,7 +722,8 @@ Public Class frmPS4TwitchHelper
 
         'Console.WriteLine((Now - starttime).TotalMilliseconds)
 
-        outputChat("Estimated HP: " & Math.Floor((maxpixx - x) * 4.5))
+        Console.WriteLine((Now - dbgtime).Milliseconds)
+        outputChat("Estimated HP: " & Math.Floor((maxpixx - x) * 2.7))
         Label1.Text = maxpixx
     End sub
     Private function checklockon As Boolean
