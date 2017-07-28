@@ -67,7 +67,7 @@ Public Class frmPS4TwitchHelper
     Dim showqueue As Boolean = true
     Dim showtime As Boolean = True
     Dim showdate As Boolean = True
-    Dim reportloads As Boolean = True
+    Dim reportloads As Boolean = False
 
     Dim dbgtime As datetime = now
 
