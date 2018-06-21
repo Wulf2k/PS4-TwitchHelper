@@ -52,6 +52,11 @@ Public Class frmPS4TwitchHelper
     Public Const PROCESS_VM_WRITE = (&H20)
     Public Const PROCESS_ALL_ACCESS = &H1F0FFF
 
+
+
+    Public Const RemotePlayHookLoc = &H1BF670
+
+
     Private _targetProcess As Process = Nothing 'to keep track of it. not used yet.
     Private _targetProcessHandle As IntPtr = IntPtr.Zero 'Used for ReadProcessMemory
 
@@ -69,12 +74,9 @@ Public Class frmPS4TwitchHelper
     Dim showdate As Boolean = True
     Dim reportloads As Boolean = False
 
-    Dim dbgtime As datetime = now
+    Dim dbgtime As datetime = Now
 
-    Dim reportlocks As Boolean = false
-    Dim lastlockstate() As Boolean = {False, False, False, false, 
-        False, false, False, false, False, false, False, false}
-    Dim reportedlockstate As Boolean = false
+
 
     Dim loadstart As DateTime
 
@@ -110,8 +112,9 @@ Public Class frmPS4TwitchHelper
         Dim Elems As HtmlElementCollection
 
         Try
-            Elems = wb.Document.GetElementsByTagName("button")
-            Elems(Elems.Count-1).InvokeMember("click")
+
+
+
         Catch ex As Exception
 
         End Try
@@ -123,49 +126,27 @@ Public Class frmPS4TwitchHelper
         Dim Elems As HtmlElementCollection
         Dim ember As Integer
 
-        Dim entry(2) As String
+        'Dim entry(2) As String
 
         Try
             Elems = wb.Document.GetElementsByTagName("li")
             For Each elem As HtmlElement In Elems
                 If elem.GetAttribute("id").Contains("ember") Then
-                    ember = parseEmber(elem.GetAttribute("id"))
+                    'ember = parseEmber(elem.GetAttribute("id"))
                     If ember > lastEmber Then
-                        lastEmber = ember
+                        'lastEmber = ember
 
-                        entry = parseChat(elem.InnerText)
+                        'entry = parseChat(elem.InnerText)
 
-                        ProcessCMD(entry)
+                        'ProcessCMD(entry)
                     End If
                 End If
             Next
 
 
 
+            drawStuff()
 
-            'Dim starttime As DateTime = now
-            'Dim a As New Drawing.Bitmap(width, height)
-            'Dim b As System.Drawing.Graphics = System.Drawing.Graphics.FromImage(a)
-            'b.CopyFromScreen(New Drawing.Point(MousePosition.X, MousePosition.y), New Drawing.Point(0, 0), a.Size)
-            'Label1.Text = MousePosition.X & ", " & MousePosition.Y & " = " & 
-            'hex(GetColorR(pix)) & " " & hex(GetColorG(pix)) & " " & hex(GetColorB(pix))
-            'Label1.Text = MousePosition.X & ", " & MousePosition.Y & " = " & a.GetPixel(0,0).GetBrightness
-
-
-
-            drawStuff
-
-
-
-            'Console.WriteLine((Now - starttime).TotalMilliseconds)
-            
-
-            '988, 295
-
-            'chathistory(0) = "Pixel(988,295) val = " & hex(c.ToArgb)
-
-            'Label1.Text = MousePosition.X & ", " & MousePosition.Y & " = 0"
-            'Label1.Text = MousePosition.X & ", " & MousePosition.Y & " = " & hex(getpixelcolor(MousePosition.X, MousePosition.Y))
 
         Catch ex As Exception
             Console.WriteLine(ex.Message)
@@ -224,7 +205,7 @@ Public Class frmPS4TwitchHelper
                 Case "rpctrlwrapper.dll"
                     rpCtrlWrap = dll.BaseAddress
 
-                Case "wow64.dll" 'Find steam_api.dll for ability to directly add SteamIDs as nodes
+                Case "wow64.dll"
                     wow64 = dll.BaseAddress
             End Select
         Next
@@ -325,9 +306,9 @@ Public Class frmPS4TwitchHelper
         Dim Elems As HtmlElementCollection
         Dim elem As HtmlElement
         Try
-            Elems = wb.Document.GetElementsByTagName("textarea")
-            elem = Elems(0)
-            elem.InnerText = elem.InnerText & " " & txt
+            'Elems = wb.Document.GetElementsByTagName("textarea")
+            'elem = Elems(0)
+            'elem.InnerText = elem.InnerText & " " & txt
         Catch ex As Exception
 
         End Try
@@ -368,62 +349,11 @@ Public Class frmPS4TwitchHelper
                 reportloads = True
             Case "noreportloads"
                 reportloads = False
-                loadscreen = false
+                loadscreen = False
 
-            Case "reportlocks"
-                reportlocks = true
-            Case "noreportlocks"
-                reportlocks = False
-                reportedlockstate = false
-                lastlockstate = {False, False, False, false, 
-        False, false, False, false, False, false, False, false}
 
         End Select
 
-        If tmpcmd = "checkbosshp" Then
-            outputChat("Estimated Boss HP: " & checkbossHP & "%")
-        End If
-
-
-        If tmpcmd = "checkhp" Then
-            checkHP
-        End If
-
-        If tmpcmd = "reconnect1" Then
-            Me.WindowState = System.Windows.Forms.FormWindowState.Minimized
-        End if
-        If tmpcmd = "reconnect2" Then
-            x = 1467
-            y = 491
-
-            Cursor.Position = New Point(x, y)
-            mouse_event(MOUSEEVENTF_LEFTDOWN, x, y, 0, IntPtr.Zero)
-            mouse_event(MOUSEEVENTF_LEFTUP, x, y, 0, IntPtr.Zero)
-        End If
-        If tmpcmd = "reconnect3" Then
-            
-            x = 1255
-            y = 684
-
-            Cursor.Position = New Point(x, y)
-            mouse_event(MOUSEEVENTF_LEFTDOWN, x, y, 0, IntPtr.Zero)
-            mouse_event(MOUSEEVENTF_LEFTUP, x, y, 0, IntPtr.Zero)
-        End If
-
-        If tmpcmd = "reconnect4" Then
-            x = 1430
-            y = 34
-
-            Cursor.Position = New Point(x, y)
-            mouse_event(MOUSEEVENTF_LEFTDOWN, x, y, 0, IntPtr.Zero)
-            mouse_event(MOUSEEVENTF_LEFTUP, x, y, 0, IntPtr.Zero)
-
-            ctrlPtr = RInt32(rpCtrlWrap + &H208a21) + rpCtrlWrap + &H208a25 + &H400
-        End If
-        If tmpcmd = "reconnect5" Then
-            Me.WindowState = System.Windows.Forms.FormWindowState.Normal
-            Cursor.Position = New Point(0,0)
-        End If
 
     End Sub
 
@@ -453,49 +383,9 @@ Public Class frmPS4TwitchHelper
             Dim tm As String
             tm = TimeOfDay.ToShortTimeString
 
-            
 
-            If reportlocks Then
-                screencap
-                Dim lockstate As Boolean = checklockon
 
-                If Not lockstate = reportedlockstate Then
-                    Dim consistentlock As Boolean = True
-                    For i = 0 To lastlockstate.Count - 2
-                        If consistentlock And not (lastlockstate(i) = lastlockstate(i + 1)) Then
-                            consistentlock = false
-                        End If
-                    Next
 
-                    If consistentlock Then
-                        outputChat("Lock state: " & lockstate)
-                        reportedlockstate = lockstate
-                    End If
-                End If
-
-                For i = lastlockstate.Count-2 To 1 Step -1
-                    lastlockstate(i) = lastlockstate(i-1)
-                Next
-                lastlockstate(0) = lockstate
-            End If
-
-            Dim col As integer
-            If reportloads Then
-                col = GetPixelColor(1730, 743)
-                loadscreen = (CInt(GetColorR(col)) + CInt(GetColorG(col)) + CInt(GetColorB(col))) < &H20
-
-                If Not loadscreen = prevloadscreen Then
-                    prevloadscreen = loadscreen
-                    If loadscreen Then
-                        outputChat("Loading screen active.")
-                        loadstart = Now
-                    Else
-                        Dim elapsed As TimeSpan
-                        elapsed = Now - loadstart
-                        outputChat("Loading complete. Duration = " & elapsed.TotalSeconds.ToString("0.0 seconds."))
-                    End If
-                End If
-            End If
 
 
             If Not tm = prevtime then
@@ -555,9 +445,6 @@ Public Class frmPS4TwitchHelper
 
         me.Location = New Point(30,30)
 
-
-        ignorelist.Add("jtv")
-
         modlist.Add("wulf2k")
         modlist.Add("wulf2kbot")
 
@@ -596,7 +483,7 @@ Public Class frmPS4TwitchHelper
             ScanForProcess("PS4 Remote Play", True)
             findDllAddresses()
 
-            ctrlPtr = RInt32(rpCtrlWrap + &H208a21) + rpCtrlWrap + &H208a25 + &H400
+            ctrlPtr = RInt32(rpCtrlWrap + RemotePlayHookLoc + 1) + rpCtrlWrap + RemotePlayHookLoc + 5 + &H400
 
             Label1.Text = Hex(ctrlPtr)
 
