@@ -61,3 +61,6 @@ Temporary Items
 *.pfx
 *.ide
 *.lock
+.vs/PS4-TwitchHelper/DesignTimeBuild/.dtbcache
+.vs/PS4-TwitchHelper/v15/Server/sqlite3/storage.ide-shm
+.vs/PS4-TwitchHelper/v15/Server/sqlite3/storage.ide-wal

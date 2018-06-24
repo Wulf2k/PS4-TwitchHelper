@@ -111,39 +111,14 @@ Public Class frmPS4TwitchHelper
     Private Sub refTimerPost_Tick() Handles refTimerPost.Tick
         Dim Elems As HtmlElementCollection
 
-        Try
-
-
-
-        Catch ex As Exception
-
-        End Try
 
     End Sub
 
     Private Sub updTimer_Tick() Handles updTimer.Tick
-        'Dim starttime As DateTime = now
-        Dim Elems As HtmlElementCollection
-        Dim ember As Integer
 
         'Dim entry(2) As String
 
         Try
-            Elems = wb.Document.GetElementsByTagName("li")
-            For Each elem As HtmlElement In Elems
-                If elem.GetAttribute("id").Contains("ember") Then
-                    'ember = parseEmber(elem.GetAttribute("id"))
-                    If ember > lastEmber Then
-                        'lastEmber = ember
-
-                        'entry = parseChat(elem.InnerText)
-
-                        'ProcessCMD(entry)
-                    End If
-                End If
-            Next
-
-
 
             drawStuff()
 
@@ -359,7 +334,7 @@ Public Class frmPS4TwitchHelper
 
 
     Private Sub drawStuff()
-        
+
 
         If ctrlPtr Then
             Dim buttons
@@ -397,18 +372,18 @@ Public Class frmPS4TwitchHelper
                 ClearOverlay
 
                 if Not user = "" Then user = user & "(" & queuecnt & ")"
-                DrawTextWithOutline(cmd, New Point(1270 - (cmd.length * 13), 568))
-                DrawTextWithOutline(user, New Point(1270 - (user.length * 13), 592),Brushes.Chartreuse)
+                DrawTextWithOutline(cmd, New Point(1500 - (cmd.Length * 13), 900))
+                DrawTextWithOutline(user, New Point(1500 - (user.Length * 13), 850), Brushes.Chartreuse)
 
 
                 If showtime Then
 
-                    DrawTextWithOutline(tm, New Point(1270 - (tm.length*13), 616))
+                    DrawTextWithOutline(tm, New Point(1500 - (tm.Length * 13), 775))
                 End If
                 If showdate Then
                     Dim dt As String
                     dt = Now.ToString("yyyy/MM/dd")
-                    DrawTextWithOutline(dt, New Point(1270 - (dt.length*13), 640))
+                    DrawTextWithOutline(dt, New Point(1500 - (dt.Length * 13), 750))
                 End If
 
 
@@ -418,7 +393,7 @@ Public Class frmPS4TwitchHelper
 
                         Dim nextcmd As String = ""
                         nextcmd = RAscStr(ctrlPtr - &HE0 + &H10 * i)
-                        DrawTextWithOutline(nextcmd, New Point(1270 - (nextcmd.Length * 13),544 - i * 24), Brushes.Gray)
+                        DrawTextWithOutline(nextcmd, New Point(1500 - (nextcmd.Length * 13), 700 - i * 24), Brushes.Gray)
                     Next
                 End If
 
@@ -430,7 +405,7 @@ Public Class frmPS4TwitchHelper
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        wb.Navigate("http://www.twitch.tv/wulf2k/chat")
+        'wb.Navigate("http://www.twitch.tv/wulf2k/chat")
 
         updTimer.Interval = 500
         updTimer.Enabled = True
@@ -441,53 +416,51 @@ Public Class frmPS4TwitchHelper
         TransparencyKey = Color.Red
         Me.SetStyle(ControlStyles.SupportsTransparentBackColor, True)
         Me.SetStyle(ControlStyles.OptimizedDoubleBuffer, True)
-     
 
-        me.Location = New Point(30,30)
+
+        Me.ControlBox = False
+        Me.Text = ""
+
+        Me.WindowState = FormWindowState.Maximized
+
 
         modlist.Add("wulf2k")
         modlist.Add("wulf2kbot")
 
-
+        connect()
 
 
     End Sub
 
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        
+    'Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+    Private Sub connect()
+
         Dim tmphnd As Integer = 0
         Dim wndCount = 0
         Dim _allProcesses() As Process = Process.GetProcesses
         For Each pp As Process In _allProcesses
             If pp.MainWindowTitle.ToLower.Equals("ps4 remote play") Then
-                tmphnd = pp.mainwindowHandle
+                tmphnd = pp.MainWindowHandle
                 GetWindowRect(tmphnd, rct)
 
-                wndcount += 1
-                If rct.Top > 0 Then
-                    rphnd = tmphnd
-                    Label1.Text = pp.MainWindowTitle & " - " & wndCount
+                Console.WriteLine(tmphnd)
 
-                    MoveWindow(rphnd, 630, 50, 1312, 760, true)
+                rphnd = tmphnd
 
-                    Me.Location = New point(rct.Left - 10, rct.Top - 30)
-                    Me.Size = New Size(rct.Right - rct.Left + 5,rct.Bottom - rct.Top + 40)
-
-                End If
             End If
         Next
-
-        If not (rphnd = 0) Then
+        Console.WriteLine(rphnd)
+        If Not (rphnd = 0) Then
             'rpCtrlWrap + &H1D0980
-            
+
             ScanForProcess("PS4 Remote Play", True)
             findDllAddresses()
 
             ctrlPtr = RInt32(rpCtrlWrap + RemotePlayHookLoc + 1) + rpCtrlWrap + RemotePlayHookLoc + 5 + &H400
-
+            Console.WriteLine(ctrlPtr)
             Label1.Text = Hex(ctrlPtr)
 
-            
+
 
         End If
         Me.SetStyle(ControlStyles.OptimizedDoubleBuffer, True)

@@ -41,6 +41,7 @@ Partial Class frmPS4TwitchHelper
         Me.Label1.Size = New System.Drawing.Size(39, 13)
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "Label1"
+        Me.Label1.Visible = False
         '
         'Button1
         '
@@ -49,18 +50,19 @@ Partial Class frmPS4TwitchHelper
         Me.Button1.Size = New System.Drawing.Size(75, 23)
         Me.Button1.TabIndex = 1
         Me.Button1.Text = "Button1"
-        Me.Button1.UseVisualStyleBackColor = true
+        Me.Button1.UseVisualStyleBackColor = True
+        Me.Button1.Visible = False
         '
         'wb
         '
-        Me.wb.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
+        Me.wb.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.wb.Location = New System.Drawing.Point(12, 25)
         Me.wb.MinimumSize = New System.Drawing.Size(20, 20)
         Me.wb.Name = "wb"
-        Me.wb.ScriptErrorsSuppressed = true
+        Me.wb.ScriptErrorsSuppressed = True
         Me.wb.Size = New System.Drawing.Size(51, 20)
         Me.wb.TabIndex = 63
-        Me.wb.Visible = false
+        Me.wb.Visible = False
         '
         'Button2
         '
@@ -69,7 +71,8 @@ Partial Class frmPS4TwitchHelper
         Me.Button2.Size = New System.Drawing.Size(75, 23)
         Me.Button2.TabIndex = 3
         Me.Button2.Text = "Button2"
-        Me.Button2.UseVisualStyleBackColor = true
+        Me.Button2.UseVisualStyleBackColor = True
+        Me.Button2.Visible = False
         '
         'Button3
         '
@@ -78,7 +81,8 @@ Partial Class frmPS4TwitchHelper
         Me.Button3.Size = New System.Drawing.Size(75, 23)
         Me.Button3.TabIndex = 64
         Me.Button3.Text = "Button3"
-        Me.Button3.UseVisualStyleBackColor = true
+        Me.Button3.UseVisualStyleBackColor = True
+        Me.Button3.Visible = False
         '
         'pbCap
         '
