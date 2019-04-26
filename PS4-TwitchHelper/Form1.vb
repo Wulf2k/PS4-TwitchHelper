@@ -108,16 +108,7 @@ Public Class frmPS4TwitchHelper
     Private Declare Sub mouse_event Lib "user32.dll" (ByVal dwFlags As Integer, ByVal dx As Integer, ByVal dy As Integer, ByVal cButtons As Integer, ByVal dwExtraInfo As IntPtr)
 
 
-    Private Sub refTimerPost_Tick() Handles refTimerPost.Tick
-        Dim Elems As HtmlElementCollection
-
-
-    End Sub
-
     Private Sub updTimer_Tick() Handles updTimer.Tick
-
-        'Dim entry(2) As String
-
         Try
 
             drawStuff()
@@ -228,109 +219,7 @@ Public Class frmPS4TwitchHelper
         End Using
     End Sub
 
-    Private Function GetPixelColor(ByVal x As Integer, ByVal y As Integer) As Integer
-        Dim a As New Drawing.Bitmap(1, 1)
-        Dim b As System.Drawing.Graphics = System.Drawing.Graphics.FromImage(a)
-        b.CopyFromScreen(New Drawing.Point(x, y), New Drawing.Point(0, 0), a.Size)
-        Dim c As Drawing.Color = a.GetPixel(0, 0)
-        b.Dispose
 
-        Return c.ToArgb
-    End Function
-    Private Function GetPixelBrightness(ByVal x As Integer, ByVal y As Integer) As single
-        Dim a As New Drawing.Bitmap(1, 1)
-        Dim b As System.Drawing.Graphics = System.Drawing.Graphics.FromImage(a)
-        b.CopyFromScreen(New Drawing.Point(x, y), New Drawing.Point(0, 0), a.Size)
-        Dim c As single     = a.GetPixel(0, 0).GetBrightness
-
-        b.Dispose
-        Return c
-    End Function     
-    Private Function GetColorR(Byval col As Integer) As Byte
-        Return (col And &HFF0000) / &H10000
-    End Function
-    Private Function GetColorG(Byval col As integer) As Byte
-        Return (col And &HFF00) / &H100
-    End Function
-    Private Function GetColorB(Byval col As integer) As Byte
-        Return col And &HFF
-    End Function
-
-    Private Function parseEmber(ByVal txt As String) As Integer
-        Dim ember = 0
-        txt = Microsoft.VisualBasic.Right(txt, txt.Length - 5)
-        ember = Val(txt)
-        Return ember
-    End Function
-    Private Function parseChat(ByVal txt As String) As String()
-        txt = Microsoft.VisualBasic.Right(txt, txt.Length - InStr(2, txt, Chr(13))).ToLower
-        If Asc(txt(0)) = 10 Then txt = Microsoft.VisualBasic.Right(txt, txt.Length - 1)
-
-        If txt.Contains(ChrW(10)) Then
-            txt = txt.Split(ChrW(10))(txt.Split(ChrW(10)).Count - 1)
-        End If
-
-        Dim username As String
-        Dim cmd As string
-        username = txt.Split(":")(0).Trim(" ")
-        cmd = txt.Split(":")(1).Trim(" ")
-
-        Return {username, cmd}
-    End Function
-    Private Sub outputChat(ByVal txt As String)
-        Dim Elems As HtmlElementCollection
-        Dim elem As HtmlElement
-        Try
-            'Elems = wb.Document.GetElementsByTagName("textarea")
-            'elem = Elems(0)
-            'elem.InnerText = elem.InnerText & " " & txt
-        Catch ex As Exception
-
-        End Try
-
-        If Not refTimerPost.Enabled Then 
-            refTimerPost.Interval = 1000
-            refTimerPost.Enabled = True
-        End If
-
-    End Sub
-
-    Private Sub ProcessCMD(entry() As String)
-        Dim tmpuser = entry(0)
-        Dim tmpcmd = entry(1)
-
-        Dim x
-        Dim y
-
-        Select Case tmpcmd
-            Case "showcmdtut"
-                showcmdtut = Not showcmdtut
-
-            Case "showqueue"
-                showqueue = True
-            Case "noshowqueue"
-                showqueue = False
-
-            Case "showtime"
-                showtime = true
-            Case "noshowtime"
-                showtime = false
-            Case "showdate"
-                showdate = true
-            Case "noshowdate"
-                showdate = false
-
-            Case "reportloads"
-                reportloads = True
-            Case "noreportloads"
-                reportloads = False
-                loadscreen = False
-
-
-        End Select
-
-
-    End Sub
 
 
     Private Sub drawStuff()
@@ -466,18 +355,6 @@ Public Class frmPS4TwitchHelper
         Me.SetStyle(ControlStyles.OptimizedDoubleBuffer, True)
     End Sub
 
-    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
-
-        Dim x = MousePosition.X
-        Dim y = MousePosition.Y
-        Dim col = GetPixelColor(x, y)
-
-        Label1.Text = x & ", " & y & "  -  " & hex(GetColorR(col)) & "." & hex(GetColorG(col)) & "." & hex(GetColorB(col)) & " - " & GetPixelBrightness(x,y)
-    End Sub
-
-
-
-
 
 
     Public Function RInt8(ByVal addr As IntPtr) As SByte
@@ -519,16 +396,44 @@ Public Class frmPS4TwitchHelper
         Return Str
     End Function
 
+
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+
+        Dim x = MousePosition.X
+        Dim y = MousePosition.Y
+        Dim col = GetPixelColor(x, y)
+
+        Label1.Text = x & ", " & y & "  -  " & Hex(GetColorR(col)) & "." & Hex(GetColorG(col)) & "." & Hex(GetColorB(col)) & " - " & GetPixelBrightness(x, y)
+    End Sub
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
 
-        screencap
-        checklockon
+        screencap()
+        checklockon()
 
         pbCap.Visible = Not pbCap.Visible
 
 
     End Sub
-    Private function checkBossHP As integer
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    Private Function checkBossHP() As Integer
         Dim width = 850
         Dim height = 1
         Dim x = 872
@@ -537,24 +442,24 @@ Public Class frmPS4TwitchHelper
         Dim a As New Drawing.Bitmap(width, height)
         Dim b As System.Drawing.Graphics = System.Drawing.Graphics.FromImage(a)
         b.CopyFromScreen(New Drawing.Point(x, y), New Drawing.Point(0, 0), a.Size)
-        b.Dispose
+        b.Dispose()
 
         Dim maxpixx = x
-        Dim col As integer
-        For i = 0 To width-1
-            col  = a.GetPixel(i, 0).ToArgb
+        Dim col As Integer
+        For i = 0 To width - 1
+            col = a.GetPixel(i, 0).ToArgb
 
-            If GetColorR(col) > &H50 And getcolorb(col) < &H60 Then
+            If GetColorR(col) > &H50 And GetColorB(col) < &H60 Then
                 maxpixx = x + i
             Else
-                if maxpixx > x Then Exit For
+                If maxpixx > x Then Exit For
             End If
         Next
 
         Return Math.Floor(((maxpixx - x) / 830) * 100)
-    End function
+    End Function
 
-    Private sub checkHP
+    Private Sub checkHP()
         'Dim starttime As DateTime = now
         dbgtime = Now
 
@@ -566,45 +471,45 @@ Public Class frmPS4TwitchHelper
         Dim a As New Drawing.Bitmap(width, height)
         Dim b As System.Drawing.Graphics = System.Drawing.Graphics.FromImage(a)
         b.CopyFromScreen(New Drawing.Point(x, y), New Drawing.Point(0, 0), a.Size)
-        b.Dispose
+        b.Dispose()
 
         Dim maxpixx = x
-        Dim col As integer
-        For i = 0 To width-1
-            col  = a.GetPixel(i, 0).ToArgb
+        Dim col As Integer
+        For i = 0 To width - 1
+            col = a.GetPixel(i, 0).ToArgb
 
-            If GetColorR(col) > &H40 And getcolorg(col) < &H40 Then
+            If GetColorR(col) > &H40 And GetColorG(col) < &H40 Then
                 maxpixx = x + i
             Else
-                if maxpixx > x Then Exit For
+                If maxpixx > x Then Exit For
             End If
         Next
 
         'Console.WriteLine((Now - starttime).TotalMilliseconds)
 
         Console.WriteLine((Now - dbgtime).Milliseconds)
-        outputChat("Estimated HP: " & Math.Floor((maxpixx - x) * 2.7))
+        'outputChat("Estimated HP: " & Math.Floor((maxpixx - x) * 2.7))
         Label1.Text = maxpixx
-    End sub
-    Private function checklockon As Boolean
+    End Sub
+    Private Function checklockon() As Boolean
 
         Dim a As New Drawing.Bitmap(50, 50)
 
         Dim pixbright As Single = 0
         Dim totpix As Integer = 0
-       
+
 
         For x = 4 To 20
             For y = 0 To 10
                 a = imgcut(x * 50, y * 50, 50, 50)
                 totpix = 0
 
-                
+
 
                 For i = 0 To 49
                     For j = 0 To 49
-                        pixbright = a.GetPixel(i,j).GetBrightness
-                        If pixbright > 0.99 and pixbright < 1 Then
+                        pixbright = a.GetPixel(i, j).GetBrightness
+                        If pixbright > 0.99 And pixbright < 1 Then
                             totpix += 1
                         End If
                     Next
@@ -613,14 +518,13 @@ Public Class frmPS4TwitchHelper
 
                 If totpix > 10 And totpix < 20 Then
                     Label1.Text = totpix
-                    Return true
+                    Return True
                 End If
             Next
         Next
-        Return false
-    End function
-
-    Private sub screencap
+        Return False
+    End Function
+    Private Sub screencap()
         'Dim starttime As DateTime = now
 
         Dim x = 645
@@ -630,10 +534,10 @@ Public Class frmPS4TwitchHelper
         Dim b As System.Drawing.Graphics = System.Drawing.Graphics.FromImage(gamecap)
         b.CopyFromScreen(New Drawing.Point(x, y), New Drawing.Point(0, 0), gamecap.Size)
 
-        b.Dispose
+        b.Dispose()
 
-    End sub
-    Private Function imgcut(byval x As Integer, byval y As Integer, byval width As Integer, byval height As Integer) As Bitmap
+    End Sub
+    Private Function imgcut(ByVal x As Integer, ByVal y As Integer, ByVal width As Integer, ByVal height As Integer) As Bitmap
 
         Dim to_bm As New Bitmap(width, height)
         Dim gr As Graphics = Graphics.FromImage(to_bm)
@@ -649,5 +553,35 @@ Public Class frmPS4TwitchHelper
         Return to_bm
 
     End Function
+    Private Function GetPixelColor(ByVal x As Integer, ByVal y As Integer) As Integer
+        Dim a As New Drawing.Bitmap(1, 1)
+        Dim b As System.Drawing.Graphics = System.Drawing.Graphics.FromImage(a)
+        b.CopyFromScreen(New Drawing.Point(x, y), New Drawing.Point(0, 0), a.Size)
+        Dim c As Drawing.Color = a.GetPixel(0, 0)
+        b.Dispose()
+
+        Return c.ToArgb
+    End Function
+    Private Function GetPixelBrightness(ByVal x As Integer, ByVal y As Integer) As Single
+        Dim a As New Drawing.Bitmap(1, 1)
+        Dim b As System.Drawing.Graphics = System.Drawing.Graphics.FromImage(a)
+        b.CopyFromScreen(New Drawing.Point(x, y), New Drawing.Point(0, 0), a.Size)
+        Dim c As Single = a.GetPixel(0, 0).GetBrightness
+
+        b.Dispose()
+        Return c
+    End Function
+    Private Function GetColorR(ByVal col As Integer) As Byte
+        Return (col And &HFF0000) / &H10000
+    End Function
+    Private Function GetColorG(ByVal col As Integer) As Byte
+        Return (col And &HFF00) / &H100
+    End Function
+    Private Function GetColorB(ByVal col As Integer) As Byte
+        Return col And &HFF
+    End Function
+
+
+
 
 End Class
