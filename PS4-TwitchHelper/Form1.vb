@@ -13,7 +13,6 @@ Public Class frmPS4TwitchHelper
         ByVal nIndex As GWL
             ) As Integer
     End Function
-
     <DllImport("user32.dll", EntryPoint:="SetWindowLong")>
     Public Shared Function SetWindowLong(
         ByVal hWnd As IntPtr,
@@ -37,7 +36,6 @@ Public Class frmPS4TwitchHelper
     Public Enum GWL As Integer
         ExStyle = -20
     End Enum
-
     Public Enum WS_EX As Integer
         Transparent = &H20
         Layered = &H80000
@@ -110,6 +108,10 @@ Public Class frmPS4TwitchHelper
 
     Private ctrlPtr As Int32
 
+
+
+
+    Private wb As New WebBrowser
 
     Private Sub updTimer_Tick() Handles updTimer.Tick
         Try
@@ -221,7 +223,7 @@ Public Class frmPS4TwitchHelper
 
         'ClearOverlay()
         'DrawTextWithOutline("Testing", MousePosition)
-
+        ' wb.Location = New Point(MousePosition.X + 100, MousePosition.Y + 100)
 
 
 
@@ -315,6 +317,13 @@ Public Class frmPS4TwitchHelper
         SetWindowLong(Me.Handle, GWL.ExStyle, NewStyle)
 
         connect()
+
+        'Me.Controls.Add(wb)
+        'wb.DocumentText = "<html><body>Test</body></html>"
+        'wb.Width = 100
+        'wb.Height = 100
+
+
 
 
     End Sub
