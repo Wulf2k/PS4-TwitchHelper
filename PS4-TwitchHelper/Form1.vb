@@ -1,13 +1,51 @@
 ﻿Imports System.Threading
 Imports System.IO
+Imports System.Runtime.InteropServices
+
 
 Public Class frmPS4TwitchHelper
 
-    Private Declare Function GetWindowRect Lib "user32" Alias "GetWindowRect" (ByVal hwnd As Integer, Byref lpRect As RECT) As Integer
-    Private Declare Function MoveWindow Lib "user32" Alias "MoveWindow" (ByVal hWnd As Integer, ByVal X As Integer, ByVal Y As Integer, ByVal nWidth As Integer, ByVal nHeight As Integer, ByVal repait As Boolean) as  Boolean
-    Private Declare Function GetPixel Lib "gdi32.dll" Alias "GetPixel" (ByVal hdc As IntPtr, ByVal nXPos As Integer, ByVal nYPos As Integer) As UInteger
+    Private Declare Function GetWindowRect Lib "user32" Alias "GetWindowRect" (ByVal hwnd As Integer, ByRef lpRect As RECT) As Integer
 
+    <DllImport("user32.dll", EntryPoint:="GetWindowLong")>
+    Public Shared Function GetWindowLong(
+        ByVal hWnd As IntPtr,
+        ByVal nIndex As GWL
+            ) As Integer
+    End Function
 
+    <DllImport("user32.dll", EntryPoint:="SetWindowLong")>
+    Public Shared Function SetWindowLong(
+        ByVal hWnd As IntPtr,
+        ByVal nIndex As GWL,
+        ByVal dwNewLong As WS_EX
+            ) As Integer
+    End Function
+
+    Public Enum WindowLongFlags As Integer
+        GWL_EXSTYLE = -20
+        GWLP_HINSTANCE = -6
+        GWLP_HWNDPARENT = -8
+        GWL_ID = -12
+        GWL_STYLE = -16
+        GWL_USERDATA = -21
+        GWL_WNDPROC = -4
+        DWLP_USER = &H8
+        DWLP_MSGRESULT = &H0
+        DWLP_DLGPROC = &H4
+    End Enum
+    Public Enum GWL As Integer
+        ExStyle = -20
+    End Enum
+
+    Public Enum WS_EX As Integer
+        Transparent = &H20
+        Layered = &H80000
+    End Enum
+    Public Enum LWA As Integer
+        ColorKey = &H1
+        Alpha = &H2
+    End Enum
 
     Structure RECT
         Public Left As Integer
@@ -32,6 +70,9 @@ Public Class frmPS4TwitchHelper
     Private Declare Function VirtualProtectEx Lib "kernel32.dll" (hProcess As IntPtr, lpAddress As IntPtr, ByVal lpSize As IntPtr, ByVal dwNewProtect As UInt32, ByRef dwOldProtect As UInt32) As Boolean
     Private Declare Function VirtualFreeEx Lib "kernel32.dll" (hProcess As IntPtr, lpAddress As IntPtr, ByVal dwSize As Integer, ByVal dwFreeType As Integer) As Boolean
     Private Declare Function CreateRemoteThread Lib "kernel32" (ByVal hProcess As Integer, ByVal lpThreadAttributes As Integer, ByVal dwStackSize As Integer, ByVal lpStartAddress As Integer, ByVal lpParameter As Integer, ByVal dwCreationFlags As Integer, ByRef lpThreadId As Integer) As Integer
+
+
+
 
     Public Const PROCESS_VM_READ = &H10
     Public Const TH32CS_SNAPPROCESS = &H2
@@ -72,10 +113,7 @@ Public Class frmPS4TwitchHelper
 
     Private Sub updTimer_Tick() Handles updTimer.Tick
         Try
-
             drawStuff()
-
-
         Catch ex As Exception
             Console.WriteLine(ex.Message)
         End Try
@@ -181,6 +219,13 @@ Public Class frmPS4TwitchHelper
     Private Sub drawStuff()
 
 
+        'ClearOverlay()
+        'DrawTextWithOutline("Testing", MousePosition)
+
+
+
+
+
         If ctrlPtr Then
             Dim buttons
             buttons = rint32(ctrlPtr + &Hc)
@@ -205,10 +250,11 @@ Public Class frmPS4TwitchHelper
 
 
 
-            If draw then
-                ClearOverlay
+            If draw Then
+                ClearOverlay()
 
-                if Not user = "" Then user = user & "(" & queuecnt & ")"
+
+                If Not user = "" Then user = user & "(" & queuecnt & ")"
                 DrawTextWithOutline(cmd, New Point(1500 - (cmd.Length * 13), 900))
                 DrawTextWithOutline(user, New Point(1500 - (user.Length * 13), 850), Brushes.Chartreuse)
 
@@ -241,9 +287,11 @@ Public Class frmPS4TwitchHelper
 
     End Sub
 
+
+
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        updTimer.Interval = 500
+        updTimer.Interval = 33
         updTimer.Enabled = True
         updTimer.Start()
 
@@ -256,14 +304,21 @@ Public Class frmPS4TwitchHelper
         Me.Text = ""
 
         Me.WindowState = FormWindowState.Maximized
+        Me.TopMost = True
 
+
+
+        Dim InitialStyle As Integer
+        Dim NewStyle As Integer
+        InitialStyle = GetWindowLong(Me.Handle, GWL.ExStyle)
+        NewStyle = InitialStyle Or WS_EX.Layered Or WS_EX.Transparent
+        SetWindowLong(Me.Handle, GWL.ExStyle, NewStyle)
 
         connect()
 
 
     End Sub
 
-    'Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
     Private Sub connect()
 
         Dim tmphnd As Integer = 0
