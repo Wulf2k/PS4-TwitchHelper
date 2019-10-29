@@ -85,7 +85,7 @@ Public Class frmPS4TwitchHelper
 
 
 
-    Public Const RemotePlayHookLoc = &H1BF670
+    Public Const RemotePlayHookLoc = &H1BFD10
 
 
     Private _targetProcess As Process = Nothing 'to keep track of it. not used yet.
