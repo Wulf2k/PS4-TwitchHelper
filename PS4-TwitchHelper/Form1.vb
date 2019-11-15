@@ -257,18 +257,18 @@ Public Class frmPS4TwitchHelper
 
 
                 If Not user = "" Then user = user & "(" & queuecnt & ")"
-                DrawTextWithOutline(cmd, New Point(1500 - (cmd.Length * 13), 900))
-                DrawTextWithOutline(user, New Point(1500 - (user.Length * 13), 850), Brushes.Chartreuse)
+                DrawTextWithOutline(cmd, New Point(1320 - (cmd.Length * 13), 500))
+                DrawTextWithOutline(user, New Point(1320 - (user.Length * 13), 550), Brushes.Chartreuse)
 
 
                 If showtime Then
 
-                    DrawTextWithOutline(tm, New Point(1500 - (tm.Length * 13), 775))
+                    DrawTextWithOutline(tm, New Point(1320 - (tm.Length * 13), 720))
                 End If
                 If showdate Then
                     Dim dt As String
                     dt = Now.ToString("yyyy/MM/dd")
-                    DrawTextWithOutline(dt, New Point(1500 - (dt.Length * 13), 750))
+                    DrawTextWithOutline(dt, New Point(1320 - (dt.Length * 13), 700))
                 End If
 
 
@@ -278,7 +278,7 @@ Public Class frmPS4TwitchHelper
 
                         Dim nextcmd As String = ""
                         nextcmd = RAscStr(ctrlPtr - &HE0 + &H10 * i)
-                        DrawTextWithOutline(nextcmd, New Point(1500 - (nextcmd.Length * 13), 700 - i * 24), Brushes.Gray)
+                        DrawTextWithOutline(nextcmd, New Point(1320 - (nextcmd.Length * 13), 600 - i * 24), Brushes.Gray)
                     Next
                 End If
 
