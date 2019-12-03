@@ -257,8 +257,8 @@ Public Class frmPS4TwitchHelper
 
 
                 If Not user = "" Then user = user & "(" & queuecnt & ")"
-                DrawTextWithOutline(cmd, New Point(1320 - (cmd.Length * 13), 500))
-                DrawTextWithOutline(user, New Point(1320 - (user.Length * 13), 550), Brushes.Chartreuse)
+                DrawTextWithOutline(cmd, New Point(1320 - (cmd.Length * 13), 630))
+                DrawTextWithOutline(user, New Point(1320 - (user.Length * 13), 670), Brushes.Chartreuse)
 
 
                 If showtime Then
