@@ -85,7 +85,7 @@ Public Class frmPS4TwitchHelper
 
 
 
-    Public Const RemotePlayHookLoc = &H1BF670
+    Public Const RemotePlayHookLoc = &H1BEB90
 
 
     Private _targetProcess As Process = Nothing 'to keep track of it. not used yet.
@@ -257,18 +257,18 @@ Public Class frmPS4TwitchHelper
 
 
                 If Not user = "" Then user = user & "(" & queuecnt & ")"
-                DrawTextWithOutline(cmd, New Point(1500 - (cmd.Length * 13), 900))
-                DrawTextWithOutline(user, New Point(1500 - (user.Length * 13), 850), Brushes.Chartreuse)
+                DrawTextWithOutline(cmd, New Point(1600 - (cmd.Length * 13), 775))
+                DrawTextWithOutline(user, New Point(1600 - (user.Length * 13), 800), Brushes.Chartreuse)
 
 
                 If showtime Then
 
-                    DrawTextWithOutline(tm, New Point(1500 - (tm.Length * 13), 775))
+                    DrawTextWithOutline(tm, New Point(1600 - (tm.Length * 13), 175))
                 End If
                 If showdate Then
                     Dim dt As String
                     dt = Now.ToString("yyyy/MM/dd")
-                    DrawTextWithOutline(dt, New Point(1500 - (dt.Length * 13), 750))
+                    DrawTextWithOutline(dt, New Point(1600 - (dt.Length * 13), 150))
                 End If
 
 
@@ -278,7 +278,7 @@ Public Class frmPS4TwitchHelper
 
                         Dim nextcmd As String = ""
                         nextcmd = RAscStr(ctrlPtr - &HE0 + &H10 * i)
-                        DrawTextWithOutline(nextcmd, New Point(1500 - (nextcmd.Length * 13), 700 - i * 24), Brushes.Gray)
+                        DrawTextWithOutline(nextcmd, New Point(1600 - (nextcmd.Length * 13), 600 - i * 24), Brushes.AliceBlue)
                     Next
                 End If
 
@@ -293,14 +293,14 @@ Public Class frmPS4TwitchHelper
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        updTimer.Interval = 33
+        updTimer.Interval = 100
         updTimer.Enabled = True
         updTimer.Start()
 
         TransparencyKey = Color.Red
         Me.SetStyle(ControlStyles.SupportsTransparentBackColor, True)
         Me.SetStyle(ControlStyles.OptimizedDoubleBuffer, True)
-
+        Me.SetStyle(ControlStyles.AllPaintingInWmPaint, True)
 
         Me.ControlBox = False
         Me.Text = ""
