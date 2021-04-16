@@ -85,11 +85,8 @@ Public Class frmPS4TwitchHelper
 
 
 
-<<<<<<< HEAD
     Public Const RemotePlayHookLoc = &H1BEB90
-=======
-    Public Const RemotePlayHookLoc = &H1BFD10
->>>>>>> origin/master
+
 
 
     Private _targetProcess As Process = Nothing 'to keep track of it. not used yet.
@@ -261,45 +258,31 @@ Public Class frmPS4TwitchHelper
 
 
                 If Not user = "" Then user = user & "(" & queuecnt & ")"
-<<<<<<< HEAD
-                DrawTextWithOutline(cmd, New Point(1600 - (cmd.Length * 13), 775))
-                DrawTextWithOutline(user, New Point(1600 - (user.Length * 13), 800), Brushes.Chartreuse)
-=======
+
                 DrawTextWithOutline(cmd, New Point(1320 - (cmd.Length * 13), 630))
                 DrawTextWithOutline(user, New Point(1320 - (user.Length * 13), 670), Brushes.Chartreuse)
->>>>>>> origin/master
+
 
 
                 If showtime Then
 
-<<<<<<< HEAD
-                    DrawTextWithOutline(tm, New Point(1600 - (tm.Length * 13), 175))
-=======
+
                     DrawTextWithOutline(tm, New Point(1320 - (tm.Length * 13), 720))
->>>>>>> origin/master
                 End If
                 If showdate Then
                     Dim dt As String
                     dt = Now.ToString("yyyy/MM/dd")
-<<<<<<< HEAD
-                    DrawTextWithOutline(dt, New Point(1600 - (dt.Length * 13), 150))
-=======
                     DrawTextWithOutline(dt, New Point(1320 - (dt.Length * 13), 700))
->>>>>>> origin/master
                 End If
 
 
                 If showqueue Then
-                    
+
                     For i = 0 To 9
 
                         Dim nextcmd As String = ""
                         nextcmd = RAscStr(ctrlPtr - &HE0 + &H10 * i)
-<<<<<<< HEAD
-                        DrawTextWithOutline(nextcmd, New Point(1600 - (nextcmd.Length * 13), 600 - i * 24), Brushes.AliceBlue)
-=======
                         DrawTextWithOutline(nextcmd, New Point(1320 - (nextcmd.Length * 13), 600 - i * 24), Brushes.Gray)
->>>>>>> origin/master
                     Next
                 End If
 
