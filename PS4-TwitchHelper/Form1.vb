@@ -1,5 +1,7 @@
-﻿Imports System.Threading
+﻿Imports System
+Imports System.Threading
 Imports System.IO
+Imports System.IO.MemoryMappedFiles
 Imports System.Runtime.InteropServices
 
 
@@ -52,6 +54,9 @@ Public Class frmPS4TwitchHelper
         Public Bottom As Integer
     End Structure
 
+
+    Dim mmf As MemoryMappedFile
+    Dim mmfa As MemoryMappedViewAccessor
 
 
     Private _whiteFont As New Font("Courier New", 16)
@@ -229,9 +234,10 @@ Public Class frmPS4TwitchHelper
 
 
 
-        If ctrlPtr Then
-            Dim buttons
-            buttons = rint32(ctrlPtr + &Hc)
+        '        If ctrlPtr Then
+        If True Then
+            'Dim buttons
+            'buttons = RInt32(ctrlPtr + &HC)
 
             Dim x, y As Integer
 
@@ -239,14 +245,28 @@ Public Class frmPS4TwitchHelper
             y = 400
 
 
-            Dim user As string
-            dim cmd As string
-            Dim queuecnt As string
-            Dim draw As Boolean = true
+            Dim user As String
+            Dim cmd As String
+            Dim queuecnt As String
+            Dim draw As Boolean = True
 
-            user = RAscStr(ctrlPtr - &H100)
-            cmd = RAscStr(ctrlPtr - &HF0)
-            queuecnt = RInt32(ctrlPtr - &H40)
+            Dim b(&H20) As Byte
+            Dim index As Int16
+
+
+            'user = RAscStr(ctrlPtr - &H100)
+            mmfa.ReadArray(&H300, b, 0, b.Length)
+            user = System.Text.Encoding.ASCII.GetString(b)
+            index = user.IndexOf(vbNullChar)
+            If index >= 0 Then user = user.Remove(index)
+
+            mmfa.ReadArray(&H310, b, 0, b.Length)
+            cmd = System.Text.Encoding.ASCII.GetString(b)
+            index = cmd.IndexOf(vbNullChar)
+            If index >= 0 Then cmd = cmd.Remove(index)
+
+
+            queuecnt = mmfa.ReadInt32(&H3C0)
 
             Dim tm As String
             tm = TimeOfDay.ToShortTimeString
@@ -289,7 +309,7 @@ Public Class frmPS4TwitchHelper
 
             End If
 
-        End if
+        End If
 
     End Sub
 
@@ -334,32 +354,36 @@ Public Class frmPS4TwitchHelper
 
     Private Sub connect()
 
-        Dim tmphnd As Integer = 0
-        Dim wndCount = 0
-        Dim _allProcesses() As Process = Process.GetProcesses
-        For Each pp As Process In _allProcesses
-            If pp.MainWindowTitle.ToLower.Equals("ps4 remote play") Then
-                tmphnd = pp.MainWindowHandle
-                GetWindowRect(tmphnd, rct)
+        'Dim tmphnd As Integer = 0
+        'Dim wndCount = 0
+        'Dim _allProcesses() As Process = Process.GetProcesses
+        'For Each pp As Process In _allProcesses
+        'If pp.MainWindowTitle.ToLower.Equals("ps4 remote play") Then
+        'tmphnd = pp.MainWindowHandle
+        'GetWindowRect(tmphnd, rct)
 
-                Console.WriteLine(tmphnd)
+        'Console.WriteLine(tmphnd)
 
-                rphnd = tmphnd
+        'rphnd = tmphnd
 
-            End If
-        Next
-        Console.WriteLine(rphnd)
-        If Not (rphnd = 0) Then
-
-
-            ScanForProcess("PS4 Remote Play", True)
-            findDllAddresses()
-
-            ctrlPtr = RInt32(rpCtrlWrap + RemotePlayHookLoc + 1) + rpCtrlWrap + RemotePlayHookLoc + 5 + &H400
-            Console.WriteLine(ctrlPtr)
+        'End If
+        'Next
+        'Console.WriteLine(rphnd)
+        'If Not (rphnd = 0) Then
 
 
-        End If
+        'ScanForProcess("PS4 Remote Play", True)
+        'findDllAddresses()
+
+        'ctrlPtr = RInt32(rpCtrlWrap + RemotePlayHookLoc + 1) + rpCtrlWrap + RemotePlayHookLoc + 5 + &H400
+        'Console.WriteLine(ctrlPtr)
+
+
+        'End If
+
+
+        mmf = MemoryMappedFile.CreateOrOpen("TwitchControl", &H1000)
+        mmfa = mmf.CreateViewAccessor()
         Me.SetStyle(ControlStyles.OptimizedDoubleBuffer, True)
     End Sub
 
