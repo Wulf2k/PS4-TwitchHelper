@@ -301,7 +301,9 @@ Public Class frmPS4TwitchHelper
                     For i = 0 To 9
 
                         Dim nextcmd As String = ""
-                        nextcmd = RAscStr(ctrlPtr - &HE0 + &H10 * i)
+                        mmfa.ReadArray(&H320 + &H10 * i, b, 0, b.Length)
+                        nextcmd = System.Text.Encoding.ASCII.GetString(b)
+
                         DrawTextWithOutline(nextcmd, New Point(1320 - (nextcmd.Length * 13), 600 - i * 24), Brushes.Gray)
                     Next
                 End If
