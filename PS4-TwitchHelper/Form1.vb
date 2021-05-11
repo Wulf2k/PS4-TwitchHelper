@@ -302,9 +302,14 @@ Public Class frmPS4TwitchHelper
 
                         Dim nextcmd As String = ""
                         mmfa.ReadArray(&H320 + &H10 * i, b, 0, b.Length)
-                        nextcmd = System.Text.Encoding.ASCII.GetString(b)
+                        Try
+                            nextcmd = System.Text.Encoding.ASCII.GetString(b).Split(Chr(0))(0)
 
-                        DrawTextWithOutline(nextcmd, New Point(1320 - (nextcmd.Length * 13), 600 - i * 24), Brushes.Gray)
+                            DrawTextWithOutline(nextcmd, New Point(1320 - (nextcmd.Length * 13), 600 - i * 24), Brushes.Gray)
+                        Catch ex As Exception
+
+                        End Try
+
                     Next
                 End If
 
