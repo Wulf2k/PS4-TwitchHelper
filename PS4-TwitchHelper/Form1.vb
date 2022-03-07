@@ -121,7 +121,7 @@ Public Class frmPS4TwitchHelper
 
     Private Sub updTimer_Tick() Handles updTimer.Tick
         Try
-            drawStuff()
+            Me.Invalidate()
         Catch ex As Exception
             Console.WriteLine(ex.Message)
         End Try
@@ -180,51 +180,42 @@ Public Class frmPS4TwitchHelper
     End Sub
 
 
-    Private Sub DrawTextWithOutline(ByVal text As String, ByVal pt As Point, clr As brush)
-        Using g As Graphics = Me.CreateGraphics
-            g.DrawString(text, _blackFont, Brushes.Black, pt.X - 1, pt.Y) 'left
-            g.DrawString(text, _blackFont, Brushes.Black, pt.X, pt.Y + 1) 'top
-            g.DrawString(text, _blackFont, Brushes.Black, pt.X + 1, pt.Y) 'right
-            g.DrawString(text, _blackFont, Brushes.Black, pt.X, pt.Y + 1) 'bottom
-            g.DrawString(text, _blackFont, Brushes.Black, pt.X - 1, pt.Y - 1) 'top left
-            g.DrawString(text, _blackFont, Brushes.Black, pt.X - 1, pt.Y + 1) 'bottom left
-            g.DrawString(text, _blackFont, Brushes.Black, pt.X + 1, pt.Y - 1) 'top right
-            g.DrawString(text, _blackFont, Brushes.Black, pt.X + 1, pt.Y + 1) 'bottom right
-            g.DrawString(text, _whiteFont, clr, pt)
-        End Using
+    Private Sub DrawTextWithOutline(g As Graphics, ByVal text As String, ByVal pt As Point, clr As brush)
+        g.DrawString(text, _blackFont, Brushes.Black, pt.X - 1, pt.Y) 'left
+        g.DrawString(text, _blackFont, Brushes.Black, pt.X, pt.Y + 1) 'top
+        g.DrawString(text, _blackFont, Brushes.Black, pt.X + 1, pt.Y) 'right
+        g.DrawString(text, _blackFont, Brushes.Black, pt.X, pt.Y + 1) 'bottom
+        g.DrawString(text, _blackFont, Brushes.Black, pt.X - 1, pt.Y - 1) 'top left
+        g.DrawString(text, _blackFont, Brushes.Black, pt.X - 1, pt.Y + 1) 'bottom left
+        g.DrawString(text, _blackFont, Brushes.Black, pt.X + 1, pt.Y - 1) 'top right
+        g.DrawString(text, _blackFont, Brushes.Black, pt.X + 1, pt.Y + 1) 'bottom right
+        g.DrawString(text, _whiteFont, clr, pt)
     End Sub
-    Private Sub DrawTextWithOutline(ByVal text As String, ByVal pt As Point)
-        Using g As Graphics = Me.CreateGraphics
-            g.DrawString(text, _blackFont, Brushes.Black, pt.X - 1, pt.Y) 'left
-            g.DrawString(text, _blackFont, Brushes.Black, pt.X, pt.Y + 1) 'top
-            g.DrawString(text, _blackFont, Brushes.Black, pt.X + 1, pt.Y) 'right
-            g.DrawString(text, _blackFont, Brushes.Black, pt.X, pt.Y + 1) 'bottom
-            g.DrawString(text, _blackFont, Brushes.Black, pt.X - 1, pt.Y - 1) 'top left
-            g.DrawString(text, _blackFont, Brushes.Black, pt.X - 1, pt.Y + 1) 'bottom left
-            g.DrawString(text, _blackFont, Brushes.Black, pt.X + 1, pt.Y - 1) 'top right
-            g.DrawString(text, _blackFont, Brushes.Black, pt.X + 1, pt.Y + 1) 'bottom right
-            g.DrawString(text, _whiteFont, Brushes.White, pt)
-        End Using
+    Private Sub DrawTextWithOutline(g As Graphics, ByVal text As String, ByVal pt As Point)
+        g.DrawString(text, _blackFont, Brushes.Black, pt.X - 1, pt.Y) 'left
+        g.DrawString(text, _blackFont, Brushes.Black, pt.X, pt.Y + 1) 'top
+        g.DrawString(text, _blackFont, Brushes.Black, pt.X + 1, pt.Y) 'right
+        g.DrawString(text, _blackFont, Brushes.Black, pt.X, pt.Y + 1) 'bottom
+        g.DrawString(text, _blackFont, Brushes.Black, pt.X - 1, pt.Y - 1) 'top left
+        g.DrawString(text, _blackFont, Brushes.Black, pt.X - 1, pt.Y + 1) 'bottom left
+        g.DrawString(text, _blackFont, Brushes.Black, pt.X + 1, pt.Y - 1) 'top right
+        g.DrawString(text, _blackFont, Brushes.Black, pt.X + 1, pt.Y + 1) 'bottom right
+        g.DrawString(text, _whiteFont, Brushes.White, pt)
     End Sub
-    Private Sub DrawLine(Byval col As Color, Byval xstart As integer, byval ystart As integer, byval xend As integer, byval yend As integer, byval width As Integer)
-        Dim g As Graphics = Me.CreateGraphics 
+    Private Sub DrawLine(g As Graphics, Byval col As Color, Byval xstart As integer, byval ystart As integer, byval xend As integer, byval yend As integer, byval width As Integer)
         Dim p As New System.Drawing.Pen(col, width) 
         g.DrawLine(p, xstart, ystart, xend, yend) 
         p.Dispose() 
-        g.Dispose() 
-
-
     End Sub
-    Private Sub ClearOverlay()
-        Using g As Graphics = Me.CreateGraphics
-            g.Clear(Color.red)
-        End Using
+    Private Sub ClearOverlay(g As Graphics)
+        g.Clear(Color.red)
     End Sub
 
 
 
 
-    Private Sub drawStuff()
+    Private Sub drawStuff(sender As Object, e As System.Windows.Forms.PaintEventArgs) Handles Me.Paint
+        Dim g As Graphics = e.Graphics
 
 
         'ClearOverlay()
@@ -274,25 +265,25 @@ Public Class frmPS4TwitchHelper
 
 
             If draw Then
-                ClearOverlay()
+                ClearOverlay(g)
 
 
                 If Not user = "" Then user = user & "(" & queuecnt & ")"
 
-                DrawTextWithOutline(cmd, New Point(1320 - (cmd.Length * 13), 630))
-                DrawTextWithOutline(user, New Point(1320 - (user.Length * 13), 670), Brushes.Chartreuse)
+                DrawTextWithOutline(g, cmd, New Point(1320 - (cmd.Length * 13), 630))
+                DrawTextWithOutline(g, user, New Point(1320 - (user.Length * 13), 670), Brushes.Chartreuse)
 
 
 
                 If showtime Then
 
 
-                    DrawTextWithOutline(tm, New Point(1320 - (tm.Length * 13), 720))
+                    DrawTextWithOutline(g, tm, New Point(1320 - (tm.Length * 13), 720))
                 End If
                 If showdate Then
                     Dim dt As String
                     dt = Now.ToString("yyyy/MM/dd")
-                    DrawTextWithOutline(dt, New Point(1320 - (dt.Length * 13), 700))
+                    DrawTextWithOutline(g, dt, New Point(1320 - (dt.Length * 13), 700))
                 End If
 
 
@@ -305,7 +296,7 @@ Public Class frmPS4TwitchHelper
                         Try
                             nextcmd = System.Text.Encoding.ASCII.GetString(b).Split(Chr(0))(0)
 
-                            DrawTextWithOutline(nextcmd, New Point(1320 - (nextcmd.Length * 13), 600 - i * 24), Brushes.Gray)
+                            DrawTextWithOutline(g, nextcmd, New Point(1320 - (nextcmd.Length * 13), 600 - i * 24), Brushes.Gray)
                         Catch ex As Exception
 
                         End Try
@@ -324,7 +315,7 @@ Public Class frmPS4TwitchHelper
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        updTimer.Interval = 100
+        updTimer.Interval = 16.667
         updTimer.Enabled = True
         updTimer.Start()
 
